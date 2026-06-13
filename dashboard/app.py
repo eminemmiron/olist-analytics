@@ -17,7 +17,7 @@ def load_data():
 df = load_data()
 delivered = df[df["order_status"] == "delivered"].copy()
 
-# --- Фильтры ---
+# Фильтры
 st.sidebar.header("🔍 Фильтры")
 
 # Фильтр по штату
@@ -58,7 +58,7 @@ st.sidebar.markdown(f"**Заказов после фильтра:** {delivered['
 
 
 
-# --- KPI ---
+# KPI
 st.subheader("📊 Ключевые метрики")
 total_revenue = delivered["total_value"].sum()
 total_orders  = delivered["order_id"].nunique()
@@ -71,7 +71,7 @@ col2.metric("Заказов",           f"{total_orders:,}")
 col3.metric("Средний чек (BRL)", f"{avg_check:.1f}")
 col4.metric("Средняя оценка",    f"{avg_review:.2f}")
 
-# --- Выручка по месяцам ---
+# Выручка по месяцам
 st.subheader("📈 Динамика выручки по месяцам")
 monthly = (
     delivered.groupby("month")["total_value"]
@@ -81,7 +81,7 @@ fig1 = px.line(monthly, x="month", y="total_value",
                labels={"month": "Месяц", "total_value": "Выручка (BRL)"}, markers=True)
 st.plotly_chart(fig1, use_container_width=True)
 
-# --- Топ категорий ---
+# Топ категорий 
 st.subheader("🏆 Топ-10 категорий")
 top_cat = (
     delivered.groupby("category")["total_value"]
@@ -102,7 +102,7 @@ fig3 = px.bar(geo, x="customer_state", y="total_value",
               labels={"customer_state": "Штат", "total_value": "Выручка (BRL)"})
 st.plotly_chart(fig3, use_container_width=True)
 
-# --- Задержка доставки ---
+# Задержка доставки
 st.subheader("🚚 Задержка доставки по штатам")
 delivery = delivered[
     delivered["order_delivered_customer_date"].notna() &
@@ -122,7 +122,7 @@ fig4 = px.bar(region_delay, x="customer_state", y="delay_days",
 fig4.update_layout(coloraxis_showscale=False)
 st.plotly_chart(fig4, use_container_width=True)
 
-# --- Оценки ---
+# Оценки
 st.subheader("⭐ Распределение оценок")
 reviews = (
     delivered.dropna(subset=["review_score"])
@@ -135,7 +135,7 @@ fig5.update_layout(xaxis=dict(tickmode="linear", tick0=1, dtick=1),
                    coloraxis_showscale=False)
 st.plotly_chart(fig5, use_container_width=True)
 
-# --- RFM ---
+# RFM
 st.subheader("👥 RFM-сегменты клиентов")
 snapshot_date = df["order_purchase_timestamp"].max()
 rfm = (
@@ -168,7 +168,7 @@ fig6 = px.pie(seg_counts, names="segment", values="count",
 st.plotly_chart(fig6, use_container_width=True)
 
 
-# --- Сезонность ---
+# Сезонность
 st.subheader("📅 Анализ сезонности")
 
 # Добавляем временные признаки
@@ -178,7 +178,7 @@ seasonal["month_num"] = seasonal["order_purchase_timestamp"].dt.month
 seasonal["month_name"] = seasonal["order_purchase_timestamp"].dt.strftime("%b")
 seasonal["weekday"] = seasonal["order_purchase_timestamp"].dt.day_name()
 
-# --- График 1: Продажи по месяцам (все годы вместе) ---
+# График 1: Продажи по месяцам (все годы вместе)
 st.markdown("#### 🗓 Средняя выручка по месяцам года")
 by_month = (
     seasonal.groupby("month_num")["total_value"]
@@ -197,7 +197,7 @@ fig7.update_layout(coloraxis_showscale=False, xaxis={"categoryorder": "array",
                    "categoryarray": list(month_labels.values())})
 st.plotly_chart(fig7, use_container_width=True)
 
-# --- График 2: Топ категорий по сезонам ---
+# График 2: Топ категорий по сезонам
 st.markdown("#### 🌦 Выручка топ-5 категорий по кварталам")
 seasonal["quarter"] = seasonal["order_purchase_timestamp"].dt.quarter.map(
     {1:"Q1 (Янв-Мар)", 2:"Q2 (Апр-Июн)", 3:"Q3 (Июл-Сен)", 4:"Q4 (Окт-Дек)"}
@@ -221,7 +221,7 @@ fig8 = px.bar(
 )
 st.plotly_chart(fig8, use_container_width=True)
 
-# --- График 3: По дням недели ---
+# График 3: По дням недели
 st.markdown("#### 📆 Активность покупателей по дням недели")
 weekday_order = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
 weekday_ru    = {"Monday":"Пн","Tuesday":"Вт","Wednesday":"Ср",
